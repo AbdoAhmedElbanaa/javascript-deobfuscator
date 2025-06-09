@@ -13,9 +13,14 @@ body {
 }
 #opts {
 	width: 99%;
+	display: flex;
+    flex-flow: wrap;
 }
-#opts input {
-	margin-left: 1em;
+#opts .option + .option {
+	margin-left: 0.7em;
+}
+::placeholder {
+  color: darkgray;
 }
 textarea {
 	width: 99%;
@@ -56,7 +61,7 @@ a.button:hover {
 <ul id="excuses">
 <li>The purpose of this program is to make obfuscated scripts easier to read and help you understand their roughly behavior, not to try to reproduce the original code or output executable code.</li>
 <li>This program is built on nodejs and babel.</li>
-<li>I developed this program for my own use. It often terminates with an uncaught error and sometimes goes into an infinite loop and freezes and executes some code of the target script in a vm (iframe: network access is blocked) without considering security.</li>
+<li>I developed this program for my own use. It often terminates with an uncaught error and sometimes goes into an infinite loop and freezes and executes some code of the target script in VM without considering security. VM is implemented as iframe[sandbox=""] and its document has Content-Security-Policy:default-src 'self'; script-src 'unsafe-eval'. You can test the security/vulnerability of VM by placing any code in the input box and clicking [Run code in vm(iframe)]. See the results in the Developer Tools.</li>
 <li>The progress is output to the console of the developer tools.</li>
 <li>Please make sure you understand the above before executing.</li>
 <li><a href="https://github.com/avotoko/javascript-deobfuscator">github repository</a>. God be with Ukraine.</li>
@@ -93,31 +98,39 @@ document.addEventListener("DOMContentLoaded", ()=>{
 			{ name: "eval-assign", label: "eval-assign [*1]", title: "Evaluate assignment expression and replace variables with values if possible" },
 			{ name: "remove-extra", label: "remove-extra [*2]", title: "Remove metacode for obfuscator.io and jscrambler" },
 			{ name: "remove", arg: "unref", label: "remove unref [*2]", title: "Remove unreferenced variables" },
-			{ name: "rename", label: "rename [*3]", title: "Rename hexadecimal identifier name starts with '_0x'" },
+			{ name: "rename", type: "text", width: "10em", label: "Rename [*3] id matching:", placeholder: "^_0x (placeholder)", title: "Enter a pattern to rename."},
 			{ name: "exclude", arg: "obfuscator-io", title: "don't detect obfuscator.io, speed up parsing of large obfuscated scripts other than obfuscator.io" },
 			{ name: "obfuscator-io-ignore-uri-malformed-error" },
 			{ name: "parser-option", arg: "allowReturnOutsideFunction", label: "allowReturnOutsideFunction", title: "babel parser option" },
 			{ name: "parser-option", arg: "allowAwaitOutsideFunction", label: "allowAwaitOutsideFunction", title: "babel parser option" },
+			{ name: "parser-option", arg: "errorRecovery", label: "errorRecovery", title: "babel parser option" },
 			{ name: "parser-option", arg: "sourceType=module", label: "sourceType=module", title: "babel parser option" },
-			{ name: "brute", title: "use when instructed to do so by console output" },
+			{ name: "define-global-in-vm", title: "define 'global' in VM and initialize it with window object." },
 		];
 	let container = document.getElementById("opts");
 	opts.forEach(opt=>{
 		let classList = [], id = opt.arg ? opt.name + "-" + opt.arg : opt.name,
 			label = opt.label || id, type = opt.type || "checkbox";
-		let e = document.createElement("input");
+		let optElem = document.createElement("div"),
+			e = document.createElement("input");
+		optElem.classList.add("option");
 		e.type = type, e.opt = opt, e.id = id;
 		switch (type){
-			case "checkbox": e.checked = !!opt.checked; break;
-			case "text": e.style.width = "2em"; opt.value && (e.value = opt.value); break;
+			case "checkbox": 
+				e.checked = !!opt.checked; break;
+			case "text": 
+				e.style.width = opt.width || "";
+				e.value = opt.value || "";
+				e.placeholder  = opt.placeholder || "";
+				break;
 		}
 		classList.length >  0 && e.classList.add(...classList);
-		container.appendChild(e);
 		let input = e;
 		e = document.createElement("label");
 		e.for = id, e.textContent = label, e.title = opt.title || id;
 		type === "checkbox" && e.addEventListener("click", (ev)=> input.click());
-		container.appendChild(e);
+		type === "text" ? optElem.append(e, input) :  optElem.append(input, e);
+		container.appendChild(optElem);
 	});
 	if (local){
 		d.getElementById("runCode").classList.remove("hide");
@@ -153,9 +166,10 @@ console.log(a); // 'eval-assign' will replace variables with literals if possibl
 			"remove-intermediate": true,
 			"property-to-identifier": true,
 			"unflatten": true,
+			"strict": true,
 		};
 		opts = Object.assign({}, defaultOpts, window.jsdfeOpts || {});
-		document.querySelectorAll('#opts > input').forEach(e=>{
+		document.querySelectorAll('#opts input').forEach(e=>{
 			const opt = e.opt;
 			if (e.type === "checkbox"){
 				if (e.checked){
@@ -186,7 +200,7 @@ console.log(a); // 'eval-assign' will replace variables with literals if possibl
 				d.querySelectorAll(".jsdfe-vm").forEach(e=>e.remove());
 			}
 			catch(e){
-				output.value = (e.type ? e.type : "error:") + " " + e.message;
+				output.value = e.name + " " + e.message;
 				d.querySelectorAll(".jsdfe-vm").forEach(e=>e.remove());
 				throw e;
 			}

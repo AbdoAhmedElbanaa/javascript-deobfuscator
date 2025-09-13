@@ -1,230 +1,232 @@
 <!doctype html>
-<html>
+<html lang="ar">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>jsdfe: JavaScript Deobfuscator Full of Excuses</title>
-<style type="text/css">
-body {
-	background-color: beige;
+<title>jsdfe — Ultra Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1724; --panel:#0b1220; --muted:#94a3b8; --accent:#7c3aed; --glass: rgba(255,255,255,0.04);
+  --success:#10b981; --danger:#ef4444; --card-shadow: 0 8px 30px rgba(2,6,23,0.6);
 }
-#title {
-	font: bold x-large sans-serif;
-}
-#opts {
-	width: 99%;
-	display: flex;
-    flex-flow: wrap;
-}
-#opts .option + .option {
-	margin-left: 0.7em;
-}
-::placeholder {
-  color: darkgray;
-}
-textarea {
-	width: 99%;
-}
-iframe {
-	width: 99%;
-	height: 4em;
-}
-button {
-	margin-top: 5px;
-	font-size: inherit;
-}
-a.button {
-	text-decoration: none;
-	font-size: inherit;
-	background-color: #EEEEEE;
-	border:  solid thin;
-	padding: 0 0.3em;
-	cursor: default;
-	color: black;
-}
-a.button:hover {
-	background-color: #CCCCCC;
-}
-.hide {
-	display: none;
-}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;color:#e6eef8;background:linear-gradient(180deg,#071025 0%, #081227 50%, #081827 100%);-webkit-font-smoothing:antialiased}
+.container{max-width:1200px;margin:28px auto;padding:24px;}
+.header{display:flex;align-items:center;gap:16px;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{width:56px;height:56px;background:linear-gradient(135deg,var(--accent),#4f46e5);border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px;box-shadow: 0 6px 18px rgba(124,58,237,0.28)}
+.title{font-size:20px;font-weight:700;color:#f8fafc}
+.subtitle{font-size:13px;color:var(--muted)}
+.header-controls{display:flex;gap:10px;align-items:center}
+.btn{background:var(--glass);border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:10px;color:#e6eef8;cursor:pointer;font-weight:600}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06)}
+.btn.primary{background:linear-gradient(90deg,var(--accent),#4f46e5);box-shadow:0 6px 18px rgba(79,70,229,0.2);border:none}
+.layout{display:grid;grid-template-columns:360px 1fr;gap:20px;margin-top:20px}
+.panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.012));border-radius:14px;padding:18px;box-shadow:var(--card-shadow);border:1px solid rgba(255,255,255,0.03)}
+.panel h3{margin:0 0 12px 0;color:#f8fafc}
+.options{display:flex;flex-direction:column;gap:10px}
+.option-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.checkbox{display:flex;align-items:center;gap:8px}
+.checkbox input{width:18px;height:18px}
+.opt-input{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#e6eef8}
+.small{font-size:12px;color:var(--muted)}
+.editor{display:flex;flex-direction:column;gap:12px}
+.editor-area{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+textarea{width:100%;min-height:240px;padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.006));color:#dff1ff;font-family:Source Code Pro, monospace;font-size:13px;resize:vertical}
+.footer-actions{display:flex;gap:8px;align-items:center}
+.badge{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.02);font-weight:600}
+.status{display:inline-flex;gap:8px;align-items:center}
+.status-dot{width:10px;height:10px;border-radius:999px;background:var(--success);box-shadow:0 0 8px rgba(16,185,129,0.18)}
+.hint{font-size:12px;color:var(--muted)}
+.options-scroll{max-height:560px;overflow:auto;padding-right:6px}
+.logo-small{width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center;color:#fff}
+.top-row{display:flex;gap:12px;align-items:center}
+.version{font-size:12px;color:var(--muted)}
+.controls-row{display:flex;gap:8px;flex-wrap:wrap}
+/* responsive */
+@media (max-width:900px){.layout{grid-template-columns:1fr;}.editor-area{grid-template-columns:1fr}.panel{padding:12px}}
 </style>
 <script src="./jsdfe.modules.bundle.min.js"></script>
 <script src="./jsdfe.bundle.min.ob.js"></script>
 </head>
 <body>
-<div>
-<span id="title">jsdfe: JavaScript Deobfuscator Full of Excuses</span>
-<span id="version"></span>
-<button id="hide-excuses">Hide/Show Excuses</button>
+<div class="container">
+  <header class="header">
+    <div class="brand">
+      <div class="logo">JD</div>
+      <div>
+        <div class="title">jsdfe: JavaScript Deobfuscator</div>
+        <div class="subtitle">Ultra Pro — Clean, fast, and safe preview</div>
+      </div>
+    </div>
+    <div class="header-controls">
+      <div class="version" id="version">v —</div>
+      <button class="btn ghost" id="hide-excuses">Show / Hide Notes</button>
+      <button class="btn primary" id="run">Deobfuscate</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="panel">
+      <h3>Options</h3>
+      <div class="options-scroll">
+        <div class="options" id="opts"></div>
+      </div>
+      <div style="height:12px"></div>
+      <h3>Notes</h3>
+      <ul id="excuses" class="small" style="margin:8px 0 0 18px;color:var(--muted)"></ul>
+    </aside>
+
+    <main class="panel editor">
+      <div class="top-row">
+        <div class="badge">Input / Output</div>
+        <div class="hint">Drag & drop a .js file into the input area. Works offline too (file: protocol).</div>
+      </div>
+
+      <div class="editor-area">
+        <div>
+          <label class="small">Input (Paste text or drop file)</label>
+          <textarea id="input" spellcheck="false" rows="12"></textarea>
+        </div>
+        <div>
+          <label class="small">Output</label>
+          <textarea id="output" spellcheck="false" rows="12"></textarea>
+        </div>
+      </div>
+
+      <div class="footer-actions">
+        <div class="controls-row">
+          <button class="btn" id="copy">Copy output</button>
+          <a id="download" class="btn" download="output.txt">Download</a>
+          <button class="btn ghost" id="clear">Clear</button>
+          <button class="btn" id="runCode">Run in VM</button>
+        </div>
+        <div style="flex:1"></div>
+        <div class="status"><span class="status-dot" id="status-dot"></span><span class="small" id="status-text">Idle</span></div>
+      </div>
+
+    </main>
+  </div>
 </div>
-<ul id="excuses">
-<li>The purpose of this program is to make obfuscated scripts easier to read and help you understand their roughly behavior, not to try to reproduce the original code or output executable code.</li>
-<li>This program is built on nodejs and babel.</li>
-<li>I developed this program for my own use. It often terminates with an uncaught error and sometimes goes into an infinite loop and freezes and executes some code of the target script in VM without considering security. VM is implemented as iframe[sandbox=""] and its document has Content-Security-Policy:default-src 'self'; script-src 'unsafe-eval'. You can test the security/vulnerability of VM by placing any code in the input box and clicking [Run code in vm(iframe)]. See the results in the Developer Tools.</li>
-<li>The progress is output to the console of the developer tools.</li>
-<li>Please make sure you understand the above before executing.</li>
-<li><a href="https://github.com/avotoko/javascript-deobfuscator">github repository</a>. God be with Ukraine.</li>
-</ul>
-<div id="opts">Options:
-</div>
-<span>[*1] Sacrifice accuracy very much. &nbsp;[*2] Sacrifice accuracy. &nbsp;[*3] May generate duplicate names with global built-in names when target script running in other than the browser.</span>
-<div>
-Input (Paste text or drop file):<br />
-<textarea id="input" rows="14" spellcheck="false"></textarea><br />
-<button id="run">Deobfuscate</button>
-<a id="download" class="button" download="output.txt">Download output</a>
-<button id="copy">Copy output to clipboard</button>
-<button id="clear">Clear output</button>
-<button id="runCode" class="hide">Run code in vm(iframe)</button>
-</div>
-<div>
-Output:<br />
-<textarea id="output" rows="13" spellcheck="false"></textarea><br />
-</div>
+
 <script>
-if (location.protocol !== "file:"){
-	let e = document.createElement("iframe");
-	e.src = "https://avotoko.blogspot.com/2021/10/i-want-to-know-number-of-accesses.html#note";
-	document.body.appendChild(e);
-}
-document.addEventListener("DOMContentLoaded", ()=>{
-	let d = document;
-	let {decode, version} = window["sd-decoder"];
-	document.getElementById("version").textContent = version;
-	let local = location.protocol === "file:",
-		opts = [
-			{ name: "eval-atob", title: "Evaluate atob(...) as string" },
-			{ name: "eval-assign", label: "eval-assign [*1]", title: "Evaluate assignment expression and replace variables with values if possible" },
-			{ name: "remove-extra", label: "remove-extra [*2]", title: "Remove metacode for obfuscator.io and jscrambler" },
-			{ name: "remove", arg: "unref", label: "remove unref [*2]", title: "Remove unreferenced variables" },
-			{ name: "rename", type: "text", width: "10em", label: "Rename [*3] id matching:", placeholder: "^_0x (placeholder)", title: "Enter a pattern to rename."},
-			{ name: "exclude", arg: "obfuscator-io", title: "don't detect obfuscator.io, speed up parsing of large obfuscated scripts other than obfuscator.io" },
-			{ name: "obfuscator-io-ignore-uri-malformed-error" },
-			{ name: "parser-option", arg: "allowReturnOutsideFunction", label: "allowReturnOutsideFunction", title: "babel parser option" },
-			{ name: "parser-option", arg: "allowAwaitOutsideFunction", label: "allowAwaitOutsideFunction", title: "babel parser option" },
-			{ name: "parser-option", arg: "errorRecovery", label: "errorRecovery", title: "babel parser option" },
-			{ name: "parser-option", arg: "sourceType=module", label: "sourceType=module", title: "babel parser option" },
-			{ name: "define-global-in-vm", title: "define 'global' in VM and initialize it with window object." },
-		];
-	let container = document.getElementById("opts");
-	opts.forEach(opt=>{
-		let classList = [], id = opt.arg ? opt.name + "-" + opt.arg : opt.name,
-			label = opt.label || id, type = opt.type || "checkbox";
-		let optElem = document.createElement("div"),
-			e = document.createElement("input");
-		optElem.classList.add("option");
-		e.type = type, e.opt = opt, e.id = id;
-		switch (type){
-			case "checkbox": 
-				e.checked = !!opt.checked; break;
-			case "text": 
-				e.style.width = opt.width || "";
-				e.value = opt.value || "";
-				e.placeholder  = opt.placeholder || "";
-				break;
-		}
-		classList.length >  0 && e.classList.add(...classList);
-		let input = e;
-		e = document.createElement("label");
-		e.for = id, e.textContent = label, e.title = opt.title || id;
-		type === "checkbox" && e.addEventListener("click", (ev)=> input.click());
-		type === "text" ? optElem.append(e, input) :  optElem.append(input, e);
-		container.appendChild(optElem);
-	});
-	if (local){
-		d.getElementById("runCode").classList.remove("hide");
-	}
-	d.getElementById("hide-excuses").addEventListener("click", (ev)=>{
-		d.getElementById("excuses").classList.toggle("hide");
-	});
-	let input = d.getElementById("input"), output = d.getElementById("output");
-	input.value = `var a = atob("aGVsbG8="); // 'eval-atob' replaces the right hand with the evaluated value.
-a = "Hey", a += " gays!"; // 'eval-assign' evaluate this assignment expression.
-console.log(a); // 'eval-assign' will replace variables with literals if possible.
-// deobfuscate obfuscator.io. 'exclude-obfuscator-io' will not detect obfuscator.io. It speeds up the analysis of other obfuscators.
-(function(_0x7f3edf,_0x62db19){var _0x3ea4da=_0x4913,_0x2b5775=_0x7f3edf();while(!![]){try{var _0x25475e=parseInt(_0x3ea4da(0x100))/0x1*(-parseInt(_0x3ea4da(0x103))/0x2)+parseInt(_0x3ea4da(0x107))/0x3*(-parseInt(_0x3ea4da(0x106))/0x4)+-parseInt(_0x3ea4da(0x10a))/0x5*(parseInt(_0x3ea4da(0x109))/0x6)+parseInt(_0x3ea4da(0x104))/0x7*(parseInt(_0x3ea4da(0x10b))/0x8)+-parseInt(_0x3ea4da(0x102))/0x9+parseInt(_0x3ea4da(0x105))/0xa*(-parseInt(_0x3ea4da(0x101))/0xb)+-parseInt(_0x3ea4da(0x108))/0xc*(-parseInt(_0x3ea4da(0x10c))/0xd);if(_0x25475e===_0x62db19)break;else _0x2b5775['push'](_0x2b5775['shift']());}catch(_0x11878b){_0x2b5775['push'](_0x2b5775['shift']());}}}(_0x1f46,0xce4d4));function hi(){var _0x44d8d2=_0x4913;console['log'](_0x44d8d2(0x10d));}function _0x4913(_0x42a11e,_0x28997d){var _0x1f46da=_0x1f46();return _0x4913=function(_0x491324,_0x5d00ae){_0x491324=_0x491324-0x100;var _0x3b893a=_0x1f46da[_0x491324];return _0x3b893a;},_0x4913(_0x42a11e,_0x28997d);}hi();function _0x1f46(){var _0x10a357=['249025SGjcqe','24OVDaZa','13229021IDBuND','Hello\x20World!','307kbyHvP','55mToEHJ','12390849AzERbI','1062ZWnvKY','3285268vpUaeV','2257250cenXBc','4zdkifI','2692809xIonWD','36scJefO','6jLhlFK'];_0x1f46=function(){return _0x10a357;};return _0x1f46();}`;
-	input.addEventListener("dragover", function(ev){
-		ev.preventDefault();
-	});
-	input.addEventListener("drop", function(ev){
-		ev.preventDefault();
-		if (ev.dataTransfer.files.length > 0){
-			let file = ev.dataTransfer.files[0];
-			if (file.type.startsWith("text/") || file.type === "application/x-javascript"){
-				file.text().then(text=>{
-					d.getElementById("input").value = text;
-				});
-			}
-			else {
-				console.log("dropped file type not supported:", file.type);
-			}
-		}
-	});
-	d.getElementById("run").addEventListener("click", function(){
-		let opts, code = input.value, defaultOpts = {
-			"remove-intermediate": true,
-			"property-to-identifier": true,
-			"unflatten": true,
-			"strict": true,
-		};
-		opts = Object.assign({}, defaultOpts, window.jsdfeOpts || {});
-		document.querySelectorAll('#opts input').forEach(e=>{
-			const opt = e.opt;
-			if (e.type === "checkbox"){
-				if (e.checked){
-					if (opt.arg){
-						opts[opt.name] = opts[opt.name] || "";
-						opts[opt.name] += "," + opt.arg;
-					}
-					else if (/^no-/.test(opt.name)){
-						opts[opt.name.substring(3)] = false;
-					}
-					else {
-						opts[opt.name] = true;
-					}
-				}
-			}
-			else if (e.type === "text"){
-				if (e.value){
-					opts[opt.name] = e.value;
-				}
-			}
-		});
-		console.log("using options:", opts);
-		output.value = "Start deobfuscating. See the console of the developer tools for the progress.";
-		setTimeout(function(){
-			try {
-				let res = decode(code, opts);
-				output.value = res.modified > 0 ? res.code : "Unable to deobfuscate";
-				d.querySelectorAll(".jsdfe-vm").forEach(e=>e.remove());
-			}
-			catch(e){
-				output.value = e.name + " " + e.message;
-				d.querySelectorAll(".jsdfe-vm").forEach(e=>e.remove());
-				throw e;
-			}
-		}, 0);
-	});
-	d.getElementById("copy").addEventListener("click", function(){
-		output.select();
-		document.execCommand("copy");
-		output.selectionEnd = output.selectionStart;
-	});
-	d.getElementById("download").addEventListener("click", function(ev){
-		let a = ev.target;
-		a.href = URL.createObjectURL(new Blob([output.value],{type:"text/plain"}));
-	});
-	d.getElementById("clear").addEventListener("click", function(){
-		output.value = "";
-	});
-	d.getElementById("runCode").addEventListener("click", function(){
-		let opts = {run: "run-in-vm"};
-		let code = d.getElementById("input").value;
-		d.getElementById("output").value = "Start the script.";
-		let res = decode(code, opts);
-		output.value = "The script has finished.";
-	});
+// keep original decoder available
+if (!window['sd-decoder']) console.warn('decoder not present');
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  let d = document;
+  const {decode, version} = window['sd-decoder'] || {decode:()=>({code:'',modified:0}), version:'?'};
+  d.getElementById('version').textContent = version;
+
+  // options list from original
+  const optsDef = [
+    { name: "eval-atob", title: "Evaluate atob(...) as string" },
+    { name: "eval-assign", label: "eval-assign [*1]", title: "Evaluate assignment expression and replace variables with values if possible" },
+    { name: "remove-extra", label: "remove-extra [*2]", title: "Remove metacode for obfuscator.io and jscrambler" },
+    { name: "remove", arg: "unref", label: "remove unref [*2]", title: "Remove unreferenced variables" },
+    { name: "rename", type: "text", width: "100%", label: "Rename [*3] id matching:", placeholder: "^_0x (pattern)"},
+    { name: "exclude", arg: "obfuscator-io", title: "don't detect obfuscator.io, speed up parsing" },
+    { name: "obfuscator-io-ignore-uri-malformed-error" },
+    { name: "parser-option", arg: "allowReturnOutsideFunction", label: "allowReturnOutsideFunction", title: "babel parser option" },
+    { name: "parser-option", arg: "allowAwaitOutsideFunction", label: "allowAwaitOutsideFunction", title: "babel parser option" },
+    { name: "parser-option", arg: "errorRecovery", label: "errorRecovery", title: "babel parser option" },
+    { name: "parser-option", arg: "sourceType=module", label: "sourceType=module", title: "babel parser option" },
+    { name: "define-global-in-vm", title: "define 'global' in VM and initialize it with window object." },
+  ];
+
+  const optsContainer = d.getElementById('opts');
+  optsDef.forEach(opt=>{
+    const id = opt.arg ? opt.name + '-' + opt.arg : opt.name;
+    const label = opt.label || id;
+    const type = opt.type || 'checkbox';
+    const row = document.createElement('div'); row.className='option-row';
+    if (type === 'checkbox'){
+      const left = document.createElement('div'); left.className='checkbox';
+      const input = document.createElement('input'); input.type='checkbox'; input.id=id; input.opt=opt;
+      const lab = document.createElement('label'); lab.htmlFor=id; lab.textContent = label; lab.title = opt.title || id; lab.className='small';
+      left.appendChild(input); left.appendChild(lab);
+      row.appendChild(left);
+    } else {
+      const lab = document.createElement('label'); lab.htmlFor=id; lab.textContent = label; lab.className='small';
+      const input = document.createElement('input'); input.type='text'; input.id=id; input.opt=opt; input.placeholder = opt.placeholder || '';
+      input.className='opt-input';
+      row.appendChild(lab); row.appendChild(input);
+    }
+    optsContainer.appendChild(row);
+  });
+
+  // populate default sample, keep original example
+  const input = d.getElementById('input');
+  const output = d.getElementById('output');
+  input.value = `var a = atob("aGVsbG8="); // 'eval-atob' replaces the right hand with the evaluated value.\na = "Hey", a += " gays!"; // 'eval-assign' evaluate this assignment expression.\nconsole.log(a); // 'eval-assign' will replace variables with literals if possible.\n(function(_0x7f3edf,_0x62db19){var _0x3ea4da=_0x4913,_0x2b5775=_0x7f3edf();while(!![]){try{var _0x25475e=parseInt(_0x3ea4da(0x100))/0x1*(-parseInt(_0x3ea4da(0x103))/0x2)+parseInt(_0x3ea4da(0x107))/0x3*(-parseInt(_0x3ea4da(0x106))/0x4)+-parseInt(_0x3ea4da(0x10a))/0x5*(parseInt(_0x3ea4da(0x109))/0x6)+parseInt(_0x3ea4da(0x104))/0x7*(parseInt(_0x3ea4da(0x10b))/0x8)+-parseInt(_0x3ea4da(0x102))/0x9+parseInt(_0x3ea4da(0x105))/0xa*(-parseInt(_0x3ea4da(0x101))/0xb)+-parseInt(_0x3ea4da(0x108))/0xc*(-parseInt(_0x3ea4da(0x10c))/0xd);if(_0x25475e===_0x62db19)break;else _0x2b5775['push'](_0x2b5775['shift']());}catch(_0x11878b){_0x2b5775['push'](_0x2b5775['shift']());}}}(_0x1f46,0xce4d4));function hi(){var _0x44d8d2=_0x4913;console['log'](_0x44d8d2(0x10d));}function _0x4913(_0x42a11e,_0x28997d){var _0x1f46da=_0x1f46();return _0x4913=function(_0x491324,_0x5d00ae){_0x491324=_0x491324-0x100;var _0x3b893a=_0x1f46da[_0x491324];return _0x3b893a;},_0x4913(_0x42a11e,_0x28997d);}hi();function _0x1f46(){var _0x10a357=['249025SGjcqe','24OVDaZa','13229021IDBuND','Hello\\x20World!','307kbyHvP','55mToEHJ','12390849AzERbI','1062ZWnvKY','3285268vpUaeV','2257250cenXBc','4zdkifI','2692809xIonWD','36scJefO','6jLhlFK'];_0x1f46=function(){return _0x10a357;};return _0x1f46();}`;
+
+  // excuses list from original
+  const excuses = [
+    'The purpose of this program is to make obfuscated scripts easier to read and help you understand their roughly behavior, not to try to reproduce the original code or output executable code.',
+    'This program is built on nodejs and babel.',
+    'I developed this program for my own use. It often terminates with an uncaught error and sometimes goes into an infinite loop and freezes and executes some code of the target script in VM without considering security.',
+    'The progress is output to the console of the developer tools.',
+    'Please make sure you understand the above before executing.',
+    'github repository: https://github.com/avotoko/javascript-deobfuscator'
+  ];
+  const excUL = d.getElementById('excuses');
+  excuses.forEach(t=>{const li=document.createElement('li');li.textContent=t;excUL.appendChild(li)});
+
+  // drag & drop
+  input.addEventListener('dragover', ev=>ev.preventDefault());
+  input.addEventListener('drop', ev=>{ev.preventDefault(); if (ev.dataTransfer.files.length>0){let f=ev.dataTransfer.files[0]; if (f.type.startsWith('text/')||f.type==='application/x-javascript'){f.text().then(t=>input.value=t);} else console.warn('unsupported file type',f.type)}});
+
+  // wire controls
+  d.getElementById('run').addEventListener('click', runDecode);
+  d.getElementById('copy').addEventListener('click', ()=>{output.select();document.execCommand('copy');output.selectionEnd=output.selectionStart});
+  d.getElementById('clear').addEventListener('click', ()=>output.value='');
+  d.getElementById('download').addEventListener('click', function(ev){this.href=URL.createObjectURL(new Blob([output.value],{type:'text/plain'}));});
+  d.getElementById('hide-excuses').addEventListener('click', ()=>excUL.classList.toggle('hide'));
+  d.getElementById('runCode').addEventListener('click', ()=>{output.value='Start the script.'; try{const res = decode(input.value, {run:'run-in-vm'}); output.value='The script has finished.'}catch(e){output.value=e.name+': '+e.message; console.error(e)}});
+
+  function gatherOptions(){
+    const opts = {"remove-intermediate":true,"property-to-identifier":true,"unflatten":true,"strict":true};
+    d.querySelectorAll('#opts input').forEach(e=>{
+      const opt = e.opt;
+      if (e.type === 'checkbox'){
+        if (e.checked){
+          if (opt.arg){ opts[opt.name] = opts[opt.name] || ''; opts[opt.name] += ','+opt.arg }
+          else if (/^no-/.test(opt.name)) opts[opt.name.substring(3)] = false;
+          else opts[opt.name] = true;
+        }
+      } else if (e.type === 'text'){
+        if (e.value) opts[opt.name] = e.value;
+      }
+    });
+    return opts;
+  }
+
+  function setStatus(text,ok=true){
+    d.getElementById('status-text').textContent = text;
+    d.getElementById('status-dot').style.background = ok? 'var(--success)':'var(--danger)';
+  }
+
+  function runDecode(){
+    setStatus('Processing...', true);
+    output.value = 'Start deobfuscating. See the console for progress.';
+    setTimeout(()=>{
+      try{
+        const opts = gatherOptions();
+        console.log('using options:', opts);
+        const res = decode(input.value, opts);
+        output.value = res.modified>0 ? res.code : 'Unable to deobfuscate';
+        setStatus('Done', true);
+        d.querySelectorAll('.jsdfe-vm').forEach(e=>e.remove());
+      }catch(e){
+        output.value = e.name + ' ' + e.message;
+        setStatus('Error', false);
+        d.querySelectorAll('.jsdfe-vm').forEach(e=>e.remove());
+        console.error(e);
+      }
+    }, 40);
+  }
+
 });
 </script>
 </body>
